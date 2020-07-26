@@ -1,7 +1,6 @@
 const db = require("../models");
 const addressBook = db.addressBook;
 const { Op, DataTypes } = require("sequelize");
-const { query } = require("express");
 
 // exports.initializeQuantity = (req, res) => {
 //     Quantity.create({userid: req.session.userId, quantity_array: req.body.quantityArray})
