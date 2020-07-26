@@ -13,14 +13,19 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false
         },
         birthday: {
-            type: Sequelize.DATE,
+            type: Sequelize.JSON,
             allowNull: false
         },
         address: {
-            type: Sequelize.ARRAY(Sequelize.STRING),
+            type: Sequelize.JSONB,
             allowNull: false
         }
+    }, {
+        createdAt: false,
+        updatedAt: false
     });
   
     return addressBook;
-  };
+};
+
+//JSONB => https://sequelize.org/master/manual/other-data-types.html. JSONB is used when any query operations are intended on JSON value
