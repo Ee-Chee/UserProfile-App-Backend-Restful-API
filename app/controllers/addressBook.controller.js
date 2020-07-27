@@ -2,45 +2,34 @@ const db = require("../models");
 const addressBook = db.addressBook;
 const { Op, DataTypes } = require("sequelize");
 
-// exports.initializeQuantity = (req, res) => {
-//     Quantity.create({userid: req.session.userId, quantity_array: req.body.quantityArray})
-//     .then(data => {
-//         res.status(200).json({
-//             message: "initialization completed"
-//         });
-//     });
-// };
+exports.findUserAddress = (req, res) => {
+    addressBook.findByPk(req.params.id)
+        .then(data => {
+            res.send(data);
+        })
+        .catch(() => {
+            res.send({ errMsg: "invalid id" })
+    });
+};
 
-// exports.findQuantity = (req, res) => {
-//     Quantity.findOne({ where: {userid: req.session.userId} })
-//     .then(data => {
-//         res.send(data);
-//     })
-//     .catch((err) => {
-//         console.log("err1", err);
-//         res.send({ errMsg: "Wrong!" })
-//     });
-// };
+exports.updateUserAddress = (req, res) => {
+    const userAddress = {
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        gender: req.body.gender,
+        birthday: JSON.parse(req.body.birthday),
+        address: JSON.parse(req.body.address)
+    };
 
-// exports.updateQuantity = (req, res) => {
-//     Quantity.update({ quantity_array : req.body.quantityArray }, {
-//         where: { userid: req.session.userId }
-//     })
-//     .then(data => {
-//         res.status(200).json({
-//             message: "update completed"
-//         });
-//         //A response data is absolutely necessary here although no data is returned, because it makes data update process faster (from FE to BE to SQL and then from QSL to BE to FE).
-//         //There two methods in FE, check home.component.
-//         //Otherwise, the data update is slow, SQL wouldnt be able to catch up user's clicking (e.g. subunit substraction), clicking 5 times but only 2 is substracted. It has to wait longer time to save this 5 times clicking.
-//         //Comment out the lines to check the difference. Try refreshing the page too. 
-//         //console.log(data); => no data returned
-//     })
-//     .catch((err) => {
-//         console.log("err2", err);
-//         res.send({ errMsg: "Wrong2!" })
-//     });
-// };
+    addressBook.update(userAddress, {
+        where: { id: req.body.id }
+    })
+    .then(data => {
+        res.status(200).json({
+            message: "User info is updated successfully"
+        });
+    })
+};
 
 exports.findAllUserAddresses = (req, res) => {
     const searchKeyword = req.query.search;
@@ -106,7 +95,7 @@ exports.findAllUserAddresses = (req, res) => {
 };
 
 exports.createUserAddress = (req, res) => {
-    const userAdress = {
+    const userAddress = {
         firstname: req.body.firstname,
         lastname: req.body.lastname,
         gender: req.body.gender,
@@ -114,7 +103,7 @@ exports.createUserAddress = (req, res) => {
         address: JSON.parse(req.body.address)
     }; //string is turned into object before saving
     
-    addressBook.create(userAdress)
+    addressBook.create(userAddress)
         .then (data => {
             res.status(200).json({
                 message: "Submitted and registered successfully"
