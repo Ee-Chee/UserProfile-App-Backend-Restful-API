@@ -26,7 +26,7 @@ exports.updateUserAddress = (req, res) => {
     })
     .then(data => {
         res.status(200).json({
-            message: "User info is updated successfully"
+            message: "Submitted successfully!"
         });
     })
 };
@@ -106,7 +106,7 @@ exports.createUserAddress = (req, res) => {
     addressBook.create(userAddress)
         .then (data => {
             res.status(200).json({
-                message: "Submitted and registered successfully"
+                message: "Submitted successfully!"
             });
         })
 }
