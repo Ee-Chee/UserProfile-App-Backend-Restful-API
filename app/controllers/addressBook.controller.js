@@ -2,33 +2,27 @@ const db = require("../models");
 const addressBook = db.addressBook;
 const { Op, DataTypes } = require("sequelize");
 
-exports.findUserAddress = (req, res) => {
-    addressBook.findByPk(req.params.id)
-        .then(data => {
-            res.send(data);
-        })
-        .catch(() => {
-            res.send({ errMsg: "invalid id" })
-    });
-};
-
 exports.updateUserAddress = (req, res) => {
     const userAddress = {
         firstname: req.body.firstname,
         lastname: req.body.lastname,
         gender: req.body.gender,
-        birthday: JSON.parse(req.body.birthday),
-        address: JSON.parse(req.body.address)
+        birthday: req.body.birthday,
+        address: req.body.address
     };
 
     addressBook.update(userAddress, {
-        where: { id: req.body.id }
+        where: { id: req.body.id },
+        returning: true,
+        plain: true
     })
     .then(data => {
-        res.status(200).json({
-            message: "Submitted successfully!"
+        res.send(data);
+    }).catch(err => {
+        res.status(500).send({
+            message: "Update failed!"
         });
-    })
+    });
 };
 
 exports.findAllUserAddresses = (req, res) => {
@@ -99,14 +93,17 @@ exports.createUserAddress = (req, res) => {
         firstname: req.body.firstname,
         lastname: req.body.lastname,
         gender: req.body.gender,
-        birthday: JSON.parse(req.body.birthday),
-        address: JSON.parse(req.body.address)
-    }; //string is turned into object before saving
+        birthday: req.body.birthday,
+        address: req.body.address
+    };
     
-    addressBook.create(userAddress)
-        .then (data => {
-            res.status(200).json({
-                message: "Submitted successfully!"
-            });
-        })
+    addressBook.create(userAddress, {
+        returning: true
+    }).then (data => {
+        res.send(data);
+    }).catch(err => {
+        res.status(500).send({
+            message: "Create failed!"
+        });
+    });
 }
